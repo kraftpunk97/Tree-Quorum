@@ -1,8 +1,8 @@
 #ifndef SERVER_SOCKET__
 #define SERVER_SOCKET__
 
-#include "../socket/socket.hpp"
-#include "../socket/socketexception.hpp"
+#include "socket.hpp"
+#include "socketexception.hpp"
 #include <string>
 
 class ServerSocket: private Socket {

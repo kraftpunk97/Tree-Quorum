@@ -38,5 +38,4 @@ void ServerSocket::accept(ServerSocket& new_socket) const {
     /* If we cannot accept this exception, throw an error*/
     if(!Socket::accept(new_socket))
         throw SocketException("Cannot accept the incoming connection.");
-    std::cout << "Socket has found a connection.";
 }

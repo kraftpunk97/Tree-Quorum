@@ -7,8 +7,6 @@ ClientSocket::ClientSocket() {
         throw SocketException("Cannot create the server socket");
 }
 
-ClientSocket::~ClientSocket() {}
-
 const ClientSocket& ClientSocket::operator<< (const std::string& message) const {
     /* If unable to send the message, throw an error. */
     if (!Socket::send(message))

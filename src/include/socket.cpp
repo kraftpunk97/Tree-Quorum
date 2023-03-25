@@ -69,7 +69,6 @@ bool Socket::accept(Socket& new_socket) const {
     /* Accept the incoming connection. */
     int addr_len = sizeof(m_address);
     new_socket.m_file_desc = ::accept(m_file_desc, (sockaddr *) &m_address, (socklen_t *) &addr_len);
-
     if (new_socket.m_file_desc < 0) {
         perror("Error occured while accepting incoming connection: ");
         return false;
@@ -89,12 +88,12 @@ bool  Socket::connect(const std::string host, const int port) {
     server_address.sin_port = htons(port);
     if (::inet_pton(AF_INET, host.c_str(), &server_address.sin_addr) == -1)
         return false;
-    std::cout << "Valid address\n";
     int connect_val = ::connect(m_file_desc, (sockaddr *) &server_address, sizeof(server_address));
     if (connect_val < 0) {
         perror("Error occured while connecting: ");
         return false;
     }
+    std::cout << "COnnection found\n";
     return true;
 }
 
