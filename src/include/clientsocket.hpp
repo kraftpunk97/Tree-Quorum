@@ -8,11 +8,13 @@
 class ClientSocket: private Socket {
 public:
     ClientSocket();
+    ~ClientSocket() { ClientSocket::close(); };
 
     const ClientSocket& operator<< (const std::string& message) const; // For sending messages
     const ClientSocket& operator>> (std::string& message); // For receiving messages
 
     void connect(const std::string host, const int port);
+    void close();
 };
 
 #endif

@@ -9,9 +9,12 @@ Socket::Socket() {
     memset(&m_address, 0, sizeof(m_address));
 }
 
-Socket::~Socket() {
-    if(is_valid())
-        ::close(m_file_desc);
+bool Socket::close() {
+    if(is_valid() and ::close(m_file_desc) == -1) {
+        perror("Error occured while closing socket: ");
+        return false;
+    }
+    return true;
 }
 
 bool Socket::is_valid() const {return m_file_desc != -1;}

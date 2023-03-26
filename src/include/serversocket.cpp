@@ -15,7 +15,7 @@ ServerSocket::ServerSocket(int port) {
 
 ServerSocket::ServerSocket() {}
 
-ServerSocket::~ServerSocket() {}
+//ServerSocket::~ServerSocket() {}
 
 
 const ServerSocket& ServerSocket::operator<< (const std::string& message) const {
@@ -38,4 +38,9 @@ void ServerSocket::accept(ServerSocket& new_socket) const {
     /* If we cannot accept this exception, throw an error*/
     if(!Socket::accept(new_socket))
         throw SocketException("Cannot accept the incoming connection.");
+}
+
+void ServerSocket::close() {
+    if(!Socket::close())
+        throw SocketException("Cannot close the connection.");
 }

@@ -17,7 +17,7 @@ private:
 
 public:
     Socket();
-    ~Socket();
+    //~Socket();
     bool is_valid() const;
 
     // Server Initialization
@@ -25,6 +25,7 @@ public:
     bool bind(const int port);
     bool listen(int backlog=5) const;
     bool accept(Socket& new_socket) const;
+    bool close();
 
     // Client initialization
     bool connect(const std::string host, const int port);

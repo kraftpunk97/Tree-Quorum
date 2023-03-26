@@ -27,3 +27,10 @@ void ClientSocket::connect(const std::string host, const int port) {
         throw SocketException("Can not connect to the server at " + host + 
                               " port " + std::to_string(port));
 }
+
+
+void ClientSocket::close() {
+    if (!Socket::close()) {
+        throw SocketException("Can not close the socket");;
+    }
+}
