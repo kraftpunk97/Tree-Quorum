@@ -13,6 +13,8 @@ public:
     const ClientSocket& operator<< (const std::string& message) const; // For sending messages
     const ClientSocket& operator>> (std::string& message); // For receiving messages
 
+    void recv(void* buffer, size_t len);
+    void send(const void* buffer, size_t len);
     void connect(const std::string host, const int port);
     void close();
 };

@@ -111,6 +111,14 @@ bool Socket::send(const std::string data) const {
     return bytes_sent != -1;
 }
 
+bool Socket::send(const void* buffer, size_t len) const {
+    int bytes_sent = ::send(m_file_desc, buffer, len, MSG_NOSIGNAL);
+    if (bytes_sent == -1) {
+        perror("Error occured while transmission of data");
+    }
+    return bytes_sent != -1;
+}
+
 int Socket::recv(std::string& data) {
     /* Recieve the data from the sender. */
     char read_buffer[MAXREADSIZE+1];
@@ -120,5 +128,13 @@ int Socket::recv(std::string& data) {
         perror("Error occured while receiving data: ");
     }
     data = read_buffer;
+    return bytes_read;
+}
+
+int Socket::recv(void * buffer, size_t len) {
+    int bytes_read = ::recv(m_file_desc, buffer, len, 0);
+    if (bytes_read == -1) {
+        perror("Error occured while receiving data");
+    }
     return bytes_read;
 }

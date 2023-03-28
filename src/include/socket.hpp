@@ -32,7 +32,9 @@ public:
 
     // Data Transmission
     bool send(const std::string data) const;
-    int recv(std::string& data);   
+    bool send(const void* buffer, size_t len) const;
+    int recv(std::string& data);
+    int recv(void* buffer, size_t len);   
 };
 
 #endif
