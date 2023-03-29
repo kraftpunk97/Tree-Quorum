@@ -19,6 +19,7 @@ public:
     void close();
 
     void set_non_blocking(const bool blocking) { Socket::set_non_blocking(blocking); };
+    int get_file_desc() { return Socket::get_file_desc(); };
 };
 
 #endif

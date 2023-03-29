@@ -36,7 +36,7 @@ public:
     int recv(std::string& data);
     int recv(void* buffer, size_t len);
 
-    void set_non_blocking(const bool blocking);   
+    void set_non_blocking(const bool blocking);
 };
 
 #endif
