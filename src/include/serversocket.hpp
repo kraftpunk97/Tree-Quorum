@@ -9,7 +9,6 @@ class ServerSocket: private Socket {
 public:
     ServerSocket(int port);
     ServerSocket();
-    ~ServerSocket() { ServerSocket::close(); };
 
     const ServerSocket& operator<< (const std::string& message) const; // For sending messages.
     const ServerSocket& operator>> (std::string& message); // For receiving messages.
