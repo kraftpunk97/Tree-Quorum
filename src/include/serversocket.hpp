@@ -18,5 +18,7 @@ public:
     void send(const void* buffer, size_t len);
     void accept(ServerSocket& new_socket) const;
     void close();
+
+    void set_non_blocking(const bool blocking) { Socket::set_non_blocking(blocking); };
 };
 #endif

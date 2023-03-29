@@ -3,6 +3,7 @@
 #include <cstring>
 #include <errno.h>
 #include <iostream>
+#include <fcntl.h>
 
 Socket::Socket() {
     m_file_desc = -1;
