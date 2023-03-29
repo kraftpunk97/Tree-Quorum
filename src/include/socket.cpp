@@ -139,3 +139,16 @@ int Socket::recv(void * buffer, size_t len) {
     }
     return bytes_read;
 }
+
+void Socket::set_non_blocking(const bool blocking) {
+    int opts;
+    opts = fcntl(m_file_desc, F_GETFL);
+
+    if (opts < 0) {
+        return;
+    }
+
+    opts = blocking ? (opts | O_NONBLOCK) : (opts & ~O_NONBLOCK);
+
+    fcntl(m_file_desc, F_SETFL, opts);
+}

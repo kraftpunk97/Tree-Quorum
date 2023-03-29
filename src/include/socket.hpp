@@ -34,7 +34,7 @@ public:
     bool send(const std::string data) const;
     bool send(const void* buffer, size_t len) const;
     int recv(std::string& data);
-    int recv(void* buffer, size_t len);   
+    int recv(void* buffer, size_t len);
 
     void set_non_blocking(const bool blocking);   
 };
