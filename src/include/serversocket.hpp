@@ -13,7 +13,7 @@ public:
     const ServerSocket& operator<< (const std::string& message) const; // For sending messages.
     const ServerSocket& operator>> (std::string& message); // For receiving messages.
 
-    void recv(void * buffer, size_t len);
+    int recv(void * buffer, size_t len);
     void send(const void* buffer, size_t len);
     void accept(ServerSocket& new_socket) const;
     bool is_valid() {return Socket::is_valid(); };

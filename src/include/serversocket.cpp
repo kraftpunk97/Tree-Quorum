@@ -33,10 +33,11 @@ const ServerSocket& ServerSocket::operator>> (std::string& message) {
     return *this;
 }
 
-void ServerSocket::recv(void* buffer, size_t len) {
+int ServerSocket::recv(void* buffer, size_t len) {
     int bytes_read = Socket::recv(buffer, len);
     if (bytes_read == -1)
         throw SocketException("Error reading incoming message.");
+    return bytes_read;
 }
 
 void ServerSocket::send(const void* buffer, size_t len) {

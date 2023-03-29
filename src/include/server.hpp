@@ -3,28 +3,46 @@
 
 #include "serversocket.hpp"
 #include <iostream>
-#include <vector>
 #include <thread>
+#include <ctime>
+#include <string>
+#include <cstring>
+#include <mutex>
 
 #define MAXCLIENTS 2
+
+
+enum message_t {REQUEST, RELEASE, EXIT};
+
+
+struct Message {
+    message_t message;
+    int id;
+    std::time_t timestamp;
+};
+
+struct MessageNode {
+    Message data;
+    MessageNode* next;
+};
 
 class Server {
 public:
     Server(int port, int designation);
-    //TODO: Maybe create destructor
     void Handshake();
-    //void EnqRequest(int request);
-    //void DeqRequest(int request);
-    //void SendMessage(std::string message, int client_num) const;
-    //void RecvMessage(std::string message, int client_num) const;
-    
+    void EnqRequest(Message request);
+    void listening(int socket_id);
+    void DeqRequest(Message request);
+    void RunServer();
     void close();
 
 private:
+    bool m_state;
     ServerSocket m_serversocket;
     ServerSocket m_clientsockets[MAXCLIENTS];
+    MessageNode* m_request_Q;
     int m_designation;
-    std::vector<int> m_request_Q[MAXCLIENTS];
+    int m_locked_by;
 };
 
 #endif
