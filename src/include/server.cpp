@@ -6,12 +6,19 @@ Server::Server(int port, int designation): m_serversocket(port) {
     m_state = false;
     m_designation = designation;
     m_request_Q = nullptr;
+    m_messages_recieved = 0;
+    m_messages_sent = 0;
 }
 
 void Server::close() {
-    for (int i=0; i<MAXCLIENTS; i++)
-        m_clientsockets[i].close();
     m_serversocket.close();
+}
+
+void Server::DisplayStatistics() {
+    using namespace std;
+    cout << endl << endl << endl;
+    cout << "Server S" << m_designation << " received " << m_messages_recieved << " messages." << endl;
+    cout << "Server S" << m_designation << " sent " << m_messages_sent << " messages." << endl;
 }
 
 void printQ(MessageNode* head) {
@@ -22,9 +29,11 @@ void printQ(MessageNode* head) {
     else {
         MessageNode* ctr = head;
         while (ctr != nullptr) {
-            std::cout << ctr->data.id;
+            if (ctr == head)
+                std::cout << "Locked by :" << ctr->data.id << "\tQueue: ";
+            else
+                std::cout << ctr->data.id;
             ctr = ctr->next;
-            count++;
         }
         std::cout << std::endl;
     }
@@ -56,61 +65,85 @@ void Server::Handshake() {
 
 void Server::listening(int socket_id) {
     ServerSocket socket = m_clientsockets[socket_id];
+    std::cout << "Listening for messages from C" << socket_id+1 << std::endl;
     while(true) {
-        //std::cout << "Listening for message\n";
+        std::cout << "\n";
         Message msg;
         memset(&msg, 0, sizeof(msg));
-        int bytes_read = socket.recv(&msg, sizeof(msg));
-        if (bytes_read == 0) {
-            std::cout << "Connection closed by client " << socket_id+1 << "\n";
+        try {
+            int bytes_read = socket.recv(&msg, sizeof(msg));
+            if (bytes_read == 0) {
+                continue;
+            }
+        }
+        catch (SocketException&) {
+            std::cout << "Connection dropped by C" << socket_id+1 << std::endl;
             return;
         }
-        //std::cout <<  "Recieved a message " << msg.message << " by " << msg.id << " at "  << std::asctime(std::localtime(&msg.timestamp)) << std::endl;
     
         // If we get a request, then enqueue it
         if (msg.message == REQUEST) {
             g_req_Q_mutex.lock();
+            m_messages_recieved++;
+            std::cout << "REQUEST by C" << msg.id << std::endl;
             Server::EnqRequest(msg);
+            if (!m_state) {
+                m_state = true;
+                Message new_lock = m_request_Q->data;
+                m_locked_by = new_lock.id;
+                m_clientsockets[new_lock.id-1] << "GRANT";
+                m_messages_sent++;
+                std::cout << "Grant sent to " << new_lock.id << std::endl;  
+            }
             g_req_Q_mutex.unlock();
         }
         else if (msg.message == RELEASE) {
-            if (m_locked_by == socket_id) {
+            if (m_locked_by == msg.id) {
                 // remove element from the queue
                 g_req_Q_mutex.lock();
-                Server::DeqRequest(msg);
+                m_messages_recieved++;
+                std::cout << "RELEASE by C" << msg.id << std::endl;
+                Server::DeqRequest(msg); // TGus should be the first message
                 m_state = m_request_Q != nullptr; // Locked if the queue is not empty
                 if (m_state) {
                     // If the server is still locked after the dequeue, send grant to the client at the top of the queue;
                     Message new_lock = m_request_Q->data;
                     m_locked_by = new_lock.id;
-                    m_clientsockets[new_lock.id] << "GRANT";                                                                              
+                    m_messages_sent++;
+                    m_clientsockets[new_lock.id-1] << "GRANT";
+                    std::cout << "GRANT sent to " << new_lock.id << std::endl;                                                                              
                 }
                 g_req_Q_mutex.unlock();
             }
             else {
                 g_req_Q_mutex.lock();
+                m_messages_recieved++;
+                std::cout << "RELEASE by C" << msg.id << std::endl;
                 Server::DeqRequest(msg);
                 g_req_Q_mutex.unlock();
             }
         }
         else if (msg.message == EXIT) {
+            m_clientsockets[socket_id].close();
+            std::cout << "EXIT by C" << msg.id << std::endl;
             break;
         }
     }
 }
 
 void Server::DeqRequest(Message request) {
-    if (m_request_Q != nullptr) {
+    if (m_request_Q != nullptr) { // IF the equest queue is not empty...
         MessageNode* ctr = m_request_Q;
         if (m_request_Q->data.id == request.id) {
-            m_request_Q = ctr->next;
+            m_request_Q = m_request_Q->next;
         }
         else {
-            while (ctr->next->data.id != request.id) {
+            while ((ctr->next)->data.id != request.id) {
                 ctr = ctr->next;
             }
             ctr->next = ctr->next->next;
         }
+        //delete ctr;
     }
     printQ(Server::m_request_Q);
 }
@@ -124,8 +157,9 @@ void Server::EnqRequest(Message msg) {
         m_request_Q = new_ptr;
     }
     else {
+        using namespace std::chrono;
         MessageNode* ctr = m_request_Q;
-        while (std::difftime(ctr->data.timestamp, new_ptr->data.timestamp) < 0 and 
+        while (duration_cast<microseconds>(ctr->data.timestamp - new_ptr->data.timestamp).count() < 0 and 
                ctr->next != nullptr)
             ctr = ctr->next;
         new_ptr->next = ctr->next;
@@ -145,4 +179,5 @@ void Server::RunServer() {
     for (int i=0; i<MAXCLIENTS; i++) {
         request_release_wait[i].join();
     }
+    usleep(100000);
 }

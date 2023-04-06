@@ -12,14 +12,14 @@ public:
     const ClientSocket& operator<< (const std::string& message) const; // For sending messages
     const ClientSocket& operator>> (std::string& message); // For receiving messages
 
-    void recv(void* buffer, size_t len);
+    int recv(void* buffer, size_t len);
     void send(const void* buffer, size_t len);
     void connect(const std::string host, const int port);
     bool is_valid() {return Socket::is_valid(); };
     void close();
 
     void set_non_blocking(const bool blocking) { Socket::set_non_blocking(blocking); };
-    int get_file_desc() { return Socket::get_file_desc(); };
+    int get_file_desc() const { return m_file_desc; };
 };
 
 #endif

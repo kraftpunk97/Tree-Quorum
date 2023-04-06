@@ -10,7 +10,7 @@
 #define MAXREADSIZE 100
 
 class Socket {
-private:
+protected:
     /* A socket is supposed to have an address and a file descriptor */
     int m_file_desc;
     sockaddr_in m_address; 
@@ -37,6 +37,7 @@ public:
     int recv(void* buffer, size_t len);
 
     void set_non_blocking(const bool blocking);
+    //int get_file_desc() const { return m_file_desc; } ;   
 };
 
 #endif

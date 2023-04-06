@@ -2,6 +2,8 @@
 #include <string>
 #include <array>
 #include <cstring>
+#include <cstdlib>
+#include <thread>
 #include "include/server.hpp"
 
 
@@ -11,6 +13,9 @@ int main(int argc, char** argv) {
     Server s(port, designation);
     std::cout << "Server S" << designation << " is now running on port " << port << ".\n";
     s.Handshake();
+    s.RunServer();
+    std::cout << "Shutting down..." << std::endl;
     s.close();
+    s.DisplayStatistics();
     return 0;
 }

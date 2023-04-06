@@ -22,10 +22,11 @@ const ClientSocket& ClientSocket::operator>> (std::string& message) {
     return *this;
 }
 
-void ClientSocket::recv(void* buffer, size_t len) {
+int ClientSocket::recv(void* buffer, size_t len) {
     int bytes_read = Socket::recv(buffer, len);
     if (bytes_read == -1)
         throw SocketException("Error reading incoming message");
+    return bytes_read;
 }
 
 void ClientSocket::send(const void* buffer, size_t len) {

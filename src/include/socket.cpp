@@ -12,7 +12,7 @@ Socket::Socket() {
 
 bool Socket::close() {
     if(is_valid() and ::close(m_file_desc) == -1) {
-        perror("Error occured while closing socket: ");
+        //perror("Error occured while closing socket: ");
         return false;
     }
     return true;
@@ -33,7 +33,7 @@ bool Socket::create() {
     /* TODO: Let's play with it later...*/
     int on = 1;
     if (setsockopt(m_file_desc, SOL_SOCKET, SO_REUSEADDR, (const char*) &on, sizeof(on)) < 0) {
-        perror("Error occured while creating socket: ");
+        //perror("Error occured while creating socket: ");
         return false;
     }
 
@@ -50,7 +50,7 @@ bool Socket::bind(const int port) {
     m_address.sin_addr.s_addr = INADDR_ANY;
     m_address.sin_port = htons(port);
     if (::bind(m_file_desc, (const sockaddr*) &m_address, sizeof(m_address)) < 0) {
-        perror("Error occured while binding the socket to the port: ");
+        //perror("Error occured while binding the socket to the port: ");
         return false;
     }
     
@@ -63,7 +63,7 @@ bool Socket::listen(int backlog) const {
         return false;
     
     if (::listen(m_file_desc, backlog) < 0) {
-        perror("Error occured while listening for active connections: ");
+        //perror("Error occured while listening for active connections: ");
         return false;
     }    
     return true;
@@ -74,7 +74,7 @@ bool Socket::accept(Socket& new_socket) const {
     int addr_len = sizeof(m_address);
     new_socket.m_file_desc = ::accept(m_file_desc, (sockaddr *) &m_address, (socklen_t *) &addr_len);
     if (new_socket.m_file_desc < 0) {
-        perror("Error occured while accepting incoming connection: ");
+        //perror("Error occured while accepting incoming connection: ");
         return false;
     }
     return true;
@@ -94,10 +94,9 @@ bool  Socket::connect(const std::string host, const int port) {
         return false;
     int connect_val = ::connect(m_file_desc, (sockaddr *) &server_address, sizeof(server_address));
     if (connect_val < 0) {
-        perror("Error occured while connecting: ");
+        //perror("Error occured while connecting: ");
         return false;
     }
-    std::cout << "COnnection found\n";
     return true;
 }
 
@@ -107,7 +106,7 @@ bool Socket::send(const std::string data) const {
     /* Send the `data` to established connection. */
     int bytes_sent = ::send(m_file_desc, data.c_str(), data.size(), MSG_NOSIGNAL);
     if(bytes_sent == -1) {
-        perror("Error occured while transmission of data: ");
+        //perror("Error occured while transmission of data: ");
     }
     return bytes_sent != -1;
 }
@@ -115,7 +114,7 @@ bool Socket::send(const std::string data) const {
 bool Socket::send(const void* buffer, size_t len) const {
     int bytes_sent = ::send(m_file_desc, buffer, len, MSG_NOSIGNAL);
     if (bytes_sent == -1) {
-        perror("Error occured while transmission of data");
+        //perror("Error occured while transmission of data");
     }
     return bytes_sent != -1;
 }
@@ -126,7 +125,7 @@ int Socket::recv(std::string& data) {
     data = "";
     int bytes_read = ::recv(m_file_desc, read_buffer, MAXREADSIZE, 0);
     if(bytes_read == -1) {
-        perror("Error occured while receiving data: ");
+        //perror("Error occured while receiving data: ");
     }
     data = read_buffer;
     return bytes_read;
@@ -135,7 +134,7 @@ int Socket::recv(std::string& data) {
 int Socket::recv(void * buffer, size_t len) {
     int bytes_read = ::recv(m_file_desc, buffer, len, 0);
     if (bytes_read == -1) {
-        perror("Error occured while receiving data");
+        //perror("Error occured while receiving data");
     }
     return bytes_read;
 }

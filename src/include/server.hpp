@@ -5,11 +5,12 @@
 #include <iostream>
 #include <thread>
 #include <ctime>
+#include <chrono>
 #include <string>
 #include <cstring>
 #include <mutex>
 
-#define MAXCLIENTS 2
+#define MAXCLIENTS 5
 
 
 enum message_t {REQUEST, RELEASE, EXIT};
@@ -18,7 +19,7 @@ enum message_t {REQUEST, RELEASE, EXIT};
 struct Message {
     message_t message;
     int id;
-    std::time_t timestamp;
+    std::chrono::high_resolution_clock::time_point timestamp;
 };
 
 struct MessageNode {
@@ -34,6 +35,7 @@ public:
     void listening(int socket_id);
     void DeqRequest(Message request);
     void RunServer();
+    void DisplayStatistics();
     void close();
 
 private:
@@ -43,6 +45,8 @@ private:
     MessageNode* m_request_Q;
     int m_designation;
     int m_locked_by;
+    int m_messages_recieved;
+    int m_messages_sent;
 };
 
 #endif
