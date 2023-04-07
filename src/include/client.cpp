@@ -108,7 +108,8 @@ void Client::RunClient() {
         usleep(sleeptime);
 
 
-        std::time_t round_start_time = std::time(nullptr);
+        //std::time_t round_start_time = std::time(nullptr);
+        auto round_start_time = std::chrono::high_resolution_clock::now();
         // Send the requests
         std::thread request_th[m_num_servers];
         for (int i=0; i<m_num_servers; i++) {
@@ -165,9 +166,11 @@ void Client::RunClient() {
 
 
         // Execute critical section
-        std::time_t entering_cs = std::time(nullptr);
-        std::cout << "Entering CS: " << m_designation << " at "
-            << std::asctime(std::localtime(&entering_cs));
+        //std::time_t entering_cs = std::time(nullptr);
+        auto entering_cs = std::chrono::high_resolution_clock::now();
+        auto latency = std::chrono::duration_cast<std::chrono::microseconds>(entering_cs - round_start_time).count();
+        //std::cout << "Entering CS: " << m_designation << " at " << std::asctime(std::localtime(&entering_cs));
+        std::cout << "Entering CS: " << m_designation << std::endl;
         std::cout << "Messages exchanged: " << (m_num_servers + num_grantsrecvd) << std::endl;
         std::cout << "Latency: " << std::difftime(entering_cs, round_start_time) << "sec" << std::endl;
         std::cout << "Critical Section executing for " << 3*m_timeunit << " microseconds" << std::endl;
