@@ -134,6 +134,7 @@ void Server::listening(int socket_id) {
 void Server::DeqRequest(Message request) {
     if (m_request_Q != nullptr) { // IF the equest queue is not empty...
         MessageNode* ctr = m_request_Q;
+        MessageNode* deletion = nullptr;
         if (m_request_Q->data.id == request.id) {
             m_request_Q = m_request_Q->next;
         }
@@ -141,9 +142,10 @@ void Server::DeqRequest(Message request) {
             while ((ctr->next)->data.id != request.id) {
                 ctr = ctr->next;
             }
+            deletion = ctr->next;
             ctr->next = ctr->next->next;
         }
-        //delete ctr;
+        delete deletion;
     }
     printQ(Server::m_request_Q);
 }
