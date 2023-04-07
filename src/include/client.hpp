@@ -35,7 +35,7 @@ public:
 
 private:
     ClientSocket m_clientsocket[MAXSERVERS];
-    //ClientSocket s0;
+    ClientSocket m_s0;
     int m_timeunit;
     int m_designation;
     int m_num_servers;

@@ -6,7 +6,7 @@ Client::Client(int designation, int timeunit, std::set <uint> quorums): m_client
     m_num_servers = 0;
     m_messages_recieved = 0;
     m_messages_sent = 0;
-    //s0 = ClientSocket();
+    m_s0 = ClientSocket();
     m_quorums = quorums;
 }
 
@@ -32,9 +32,10 @@ void Client::Handshake(const std::string* host_arr, const int* port_arr, const i
     m_num_servers = num_servers;
     for (auto i=0; i<m_num_servers; i++) {
         m_clientsocket[i].connect(host_arr[i], port_arr[i]);
-        std::cout << "Connected to Server " << i+1 << ".\n";
+        std::cout << "Connected to Server " << i+1 << "." << std::endl;
     }
-    //s0.connect(host_arr[m_num_servers], port_arr[m_num_servers]);
+    m_s0.connect(host_arr[m_num_servers], port_arr[m_num_servers]);
+    std::cout << "Connected to Server 0." << std::endl;
     std::cout << "Waiting for the handshake signal from all servers.\n";
     
     std::thread handshake_th_arr[m_num_servers];
@@ -172,7 +173,7 @@ void Client::RunClient() {
         //std::cout << "Entering CS: " << m_designation << " at " << std::asctime(std::localtime(&entering_cs));
         std::cout << "Entering CS: " << m_designation << std::endl;
         std::cout << "Messages exchanged: " << (m_num_servers + num_grantsrecvd) << std::endl;
-        std::cout << "Latency: " << std::difftime(entering_cs, round_start_time) << "sec" << std::endl;
+        std::cout << "Latency: " << latency << "usec" << std::endl;
         std::cout << "Critical Section executing for " << 3*m_timeunit << " microseconds" << std::endl;
         usleep((uint) 3*m_timeunit);
     
@@ -201,7 +202,7 @@ void Client::RunClient() {
     }
 
     usleep(100000);
-    /*s0 << "Computation complete";
+    m_s0 << "Computation complete";
     usleep(100000);
-    s0.close();*/
+    m_s0.close();
 }
