@@ -64,15 +64,15 @@ void Server::Handshake() {
 }
 
 void Server::listening(int socket_id) {
+    Message msg;
     ServerSocket socket = m_clientsockets[socket_id];
     std::cout << "Listening for messages from C" << socket_id+1 << std::endl;
     while(true) {
-        std::cout << "\n";
-        Message msg;
+        //std::cout << "\n";
         memset(&msg, 0, sizeof(msg));
         try {
             int bytes_read = socket.recv(&msg, sizeof(msg));
-            if (bytes_read == 0) {
+            if (bytes_read < 2) {
                 continue;
             }
         }
@@ -128,6 +128,7 @@ void Server::listening(int socket_id) {
             std::cout << "EXIT by C" << msg.id << std::endl;
             break;
         }
+        std::cout << std::endl;
     }
 }
 
