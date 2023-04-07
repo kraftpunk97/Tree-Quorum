@@ -5,7 +5,7 @@
 #include <thread>
 #include <set>
 
-#define TIMEUNIT 5000000 // This is in microseconds
+#define TIMEUNIT 500000 // This is in microseconds
 std::string host_arr[] = { "10.176.69.32",
                            "10.176.69.33",
                            "10.176.69.34",
