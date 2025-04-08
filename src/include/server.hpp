@@ -12,22 +12,28 @@
 
 #define MAXCLIENTS 5
 
+enum message_t
+{
+    REQUEST,
+    RELEASE,
+    EXIT
+};
 
-enum message_t {REQUEST, RELEASE, EXIT};
-
-
-struct Message {
+struct Message
+{
     message_t message;
     int id;
     std::chrono::high_resolution_clock::time_point timestamp;
 };
 
-struct MessageNode {
+struct MessageNode
+{
     Message data;
-    MessageNode* next;
+    MessageNode *next;
 };
 
-class Server {
+class Server
+{
 public:
     Server(int port, int designation);
     void Handshake();
@@ -42,7 +48,7 @@ private:
     bool m_state;
     ServerSocket m_serversocket;
     ServerSocket m_clientsockets[MAXCLIENTS];
-    MessageNode* m_request_Q;
+    MessageNode *m_request_Q;
     int m_designation;
     int m_locked_by;
     int m_messages_recieved;

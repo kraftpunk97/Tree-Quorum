@@ -17,18 +17,25 @@
 
 #define MAXSERVERS 7
 
-enum message_t {REQUEST, RELEASE, EXIT};
+enum message_t
+{
+    REQUEST,
+    RELEASE,
+    EXIT
+};
 
-struct Message {
+struct Message
+{
     message_t message;
     int id;
     std::chrono::high_resolution_clock::time_point timestamp;
 };
 
-class Client {
+class Client
+{
 public:
-    Client(int designation, int timeunit, std::set <uint> quorums);
-    void Handshake(const std::string* host_arr, const int* port_arr, const int num_servers);
+    Client(int designation, int timeunit, std::set<uint> quorums);
+    void Handshake(const std::string *host_arr, const int *port_arr, const int num_servers);
     void close();
     void DisplayStatistics();
     void RunClient();
@@ -41,7 +48,7 @@ private:
     int m_num_servers;
     int m_messages_recieved;
     int m_messages_sent;
-    std::set <uint> m_quorums;
+    std::set<uint> m_quorums;
 };
 
 #endif

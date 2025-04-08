@@ -6,14 +6,14 @@
 #include <sys/socket.h>
 #include <string>
 
-
 #define MAXREADSIZE 100
 
-class Socket {
+class Socket
+{
 protected:
     /* A socket is supposed to have an address and a file descriptor */
     int m_file_desc;
-    sockaddr_in m_address; 
+    sockaddr_in m_address;
 
 public:
     Socket();
@@ -23,8 +23,8 @@ public:
     // Server Initialization
     bool create();
     bool bind(const int port);
-    bool listen(int backlog=5) const;
-    bool accept(Socket& new_socket) const;
+    bool listen(int backlog = 5) const;
+    bool accept(Socket &new_socket) const;
     bool close();
 
     // Client initialization
@@ -32,12 +32,12 @@ public:
 
     // Data Transmission
     bool send(const std::string data) const;
-    bool send(const void* buffer, size_t len) const;
-    int recv(std::string& data);
-    int recv(void* buffer, size_t len);
+    bool send(const void *buffer, size_t len) const;
+    int recv(std::string &data);
+    int recv(void *buffer, size_t len);
 
     void set_non_blocking(const bool blocking);
-    //int get_file_desc() const { return m_file_desc; } ;   
+    // int get_file_desc() const { return m_file_desc; } ;
 };
 
 #endif

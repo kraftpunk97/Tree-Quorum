@@ -6,8 +6,8 @@
 #include <thread>
 #include "include/server.hpp"
 
-
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     int designation = argc > 1 ? std::atoi(argv[1]) : 0;
     int port = argc > 2 ? std::atoi(argv[2]) : 8077;
     Server s(port, designation);
